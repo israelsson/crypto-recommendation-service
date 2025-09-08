@@ -27,7 +27,7 @@ public class CryptoController {
 
         log.info("Incoming request to get normalized crypto");
 
-        cryptoService.
+
 
         return ResponseEntity.ok(NormalizedResponse.builder().build());
     }
