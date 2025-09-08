@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: "crypto-recommendation-service"
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://localhost:5432/piktiv-crypto-service
+    username: postgres
+    password:
+    hikari:
+      auto-commit: true
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog-master.xml
