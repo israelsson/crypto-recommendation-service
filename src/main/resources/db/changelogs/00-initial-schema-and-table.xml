@@ -1,0 +1,32 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+  <changeSet id="0-create-schema" author="Anders Israelsson">
+    <sql>
+      CREATE SCHEMA IF NOT EXISTS piktiv_crypto_service;
+    </sql>
+    <rollback>
+      DROP SCHEMA IF EXISTS piktiv_crypto_service;
+    </rollback>
+  </changeSet>
+
+  <changeSet id="01-initial-table" author="Anders Israelsson">
+    <sql>
+      CREATE TABLE IF NOT EXISTS piktiv_crypto_service.crypto
+      (
+        id SERIAL,
+        timestamp TIMESTAMP NOT NULL,
+        symbol TEXT NOT NULL,
+        price DECIMAL NOT NULL,
+        PRIMARY KEY (id)
+      );
+    </sql>
+    <rollback>
+      DROP TABLE piktiv_crypto_service.crypto_btc;
+    </rollback>
+  </changeSet>
+
+</databaseChangeLog>
+
