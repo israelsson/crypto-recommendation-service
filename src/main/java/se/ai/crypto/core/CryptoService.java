@@ -4,19 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
-import se.ai.crypto.adapters.spi.CryptoCurrencyStatisticRowMapper;
 import se.ai.crypto.configuration.properties.CryptoProperties;
+import se.ai.crypto.core.exception.CryptoUnsupportedException;
 import se.ai.crypto.core.exception.DatabaseException;
 import se.ai.crypto.core.exception.StatisticTypeNotSupportedException;
 import se.ai.crypto.core.model.CryptoCurrencyStatistic;
 import se.ai.crypto.core.model.CryptoCurrencyWithResultType;
 import se.ai.crypto.core.ports.DataStorage;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -38,7 +37,31 @@ public class CryptoService {
         }
     }
 
-    public List<CryptoCurrencyStatistic> findMinMaxOldestNewestByCrypto() {
+    public CryptoCurrencyStatistic findMinMaxOldestNewestForRequestedCrypto(String requestedCrypto) {
+
+        requestedCrypto = requestedCrypto.toUpperCase();
+        if (!cryptoProperties.getSupportedCryptos().contains(requestedCrypto)) {
+            throw new CryptoUnsupportedException("Crypto: '" + requestedCrypto + "' not supported");
+        }
+
+        final var crypto = getCryptoCurrencyStatisticFromDatabaseResponse(requestedCrypto);
+        if (crypto == null) {
+            return null;
+        }
+
+        final var statistic = convertCryptoCurrenciesToStatistic(crypto);
+        final var normalizedRange = calculateNormalizedRange(
+                statistic.getMax(),
+                statistic.getMin()
+        );
+
+        statistic.setNormalizedRange(normalizedRange);
+
+        return statistic;
+
+    }
+
+    public List<CryptoCurrencyStatistic> findMinMaxOldestNewestForAllCryptos() {
 
         List<CryptoCurrencyStatistic> resultList = new ArrayList<>();
 

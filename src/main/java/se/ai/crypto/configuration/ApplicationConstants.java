@@ -7,4 +7,5 @@ public class ApplicationConstants {
 
     public static final String BASE_PATH = "/api/v1";
     public static final String NORMALIZED_PATH = "/normalized";
+    public static final String CURRENCY_PATH = "/{currency}";
 }
