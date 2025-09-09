@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import se.ai.crypto.configuration.properties.CryptoProperties;
 import se.ai.crypto.core.exception.ResourceNotFoundException;
 import se.ai.crypto.core.model.CryptoCurrency;
+import se.ai.crypto.core.model.CryptoType;
 import se.ai.crypto.core.ports.DataStorage;
 import se.ai.crypto.utils.FileReaderUtil;
 

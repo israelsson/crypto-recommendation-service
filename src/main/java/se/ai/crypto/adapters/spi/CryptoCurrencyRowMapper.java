@@ -2,7 +2,7 @@ package se.ai.crypto.adapters.spi;
 
 import org.springframework.jdbc.core.RowMapper;
 import se.ai.crypto.core.model.CryptoCurrency;
-import se.ai.crypto.core.CryptoType;
+import se.ai.crypto.core.model.CryptoType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

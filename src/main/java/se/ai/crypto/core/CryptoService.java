@@ -10,6 +10,7 @@ import se.ai.crypto.core.exception.DatabaseException;
 import se.ai.crypto.core.exception.StatisticTypeNotSupportedException;
 import se.ai.crypto.core.model.CryptoCurrencyStatistic;
 import se.ai.crypto.core.model.CryptoCurrencyWithResultType;
+import se.ai.crypto.core.model.HighestRatedCryptoCurrency;
 import se.ai.crypto.core.ports.DataStorage;
 
 import java.util.ArrayList;
@@ -87,6 +88,27 @@ public class CryptoService {
         resultList.sort(Comparator.comparingDouble(CryptoCurrencyStatistic::getNormalizedRange).reversed());
 
         return resultList;
+    }
+
+    public HighestRatedCryptoCurrency findHighestRatedCurrencyForDay(String day) {
+
+        return getHighestRatedCryptoCurrencyForDay(day);
+    }
+
+    private HighestRatedCryptoCurrency getHighestRatedCryptoCurrencyForDay(String day) {
+
+        try {
+            return dataStorage.findHighestRatedCrypto(day);
+        } catch (Exception e) {
+            log.error(
+                    "Something went wrong finding highest rated crypto currency for day: {}, reason {}",
+                    day,
+                    e.getMessage(),
+                    e
+            );
+        }
+
+        return null;
     }
 
     private double calculateNormalizedRange(double max, double min) {
