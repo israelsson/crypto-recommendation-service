@@ -20,11 +20,21 @@
         timestamp TIMESTAMP NOT NULL,
         symbol TEXT NOT NULL,
         price DECIMAL NOT NULL,
-        PRIMARY KEY (id)
+        PRIMARY KEY (id),
+        UNIQUE (timestamp, symbol)
       );
     </sql>
     <rollback>
-      DROP TABLE piktiv_crypto_service.crypto_btc;
+      DROP TABLE piktiv_crypto_service.crypto;
+    </rollback>
+  </changeSet>
+
+  <changeSet id="02-initial-index" author="Anders Israelsson">
+    <sql>
+      CREATE UNIQUE INDEX currentPrice ON piktiv_crypto_service.crypto(timestamp, symbol);
+    </sql>
+    <rollback>
+      DROP INDEX currentPrice;
     </rollback>
   </changeSet>
 

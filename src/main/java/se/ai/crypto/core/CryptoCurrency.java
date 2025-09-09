@@ -11,5 +11,5 @@ public class CryptoCurrency {
 
     LocalDateTime timestamp;
     CryptoType type;
-
+    double price;
 }
