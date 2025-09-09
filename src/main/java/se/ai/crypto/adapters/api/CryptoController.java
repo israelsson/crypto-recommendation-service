@@ -7,10 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.ai.crypto.adapters.api.dto.CryptoCurrencyStatisticDto;
-import se.ai.crypto.adapters.api.dto.NormalizedResponseDto;
+import se.ai.crypto.adapters.api.dto.NormalizedListResponseDto;
 import se.ai.crypto.configuration.ApplicationConstants;
 import se.ai.crypto.core.CryptoService;
 
@@ -28,18 +29,30 @@ public class CryptoController {
             path = ApplicationConstants.NORMALIZED_PATH,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<NormalizedResponseDto> getNormalizedRangeOfCryptos() {
+    public ResponseEntity<NormalizedListResponseDto> getNormalizedRangeOfCryptos() {
 
         log.info("Incoming request to get normalized crypto");
 
-        final var statisticDto = cryptoService.findMinMaxOldestNewestByCrypto()
+        final var statisticDto = cryptoService.findMinMaxOldestNewestForAllCryptos()
                 .stream()
                 .map(CryptoCurrencyStatisticDto::fromCoreModel)
                 .toList();
 
-        return ResponseEntity.ok(NormalizedResponseDto.builder()
+        return ResponseEntity.ok(NormalizedListResponseDto.builder()
                         .statistics(statisticDto)
                 .build()
         );
+    }
+
+    @Operation(summary = "Returns info about requested currency")
+    @GetMapping(
+            path = ApplicationConstants.NORMALIZED_PATH + ApplicationConstants.CURRENCY_PATH,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CryptoCurrencyStatisticDto> getNormalizedRangeByCrypto(@PathVariable String currency) {
+
+        log.info("Incoming request to get info about crypto: {}", currency);
+        final var statistic = cryptoService.findMinMaxOldestNewestForRequestedCrypto(currency);
+        return ResponseEntity.ok(CryptoCurrencyStatisticDto.fromCoreModel(statistic));
     }
 }
