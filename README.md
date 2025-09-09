@@ -1,6 +1,9 @@
 # crypto-recommendation-service
 Piktiv backend exercise: Crypto Investment
 
+## API
+An API documentation can be found at http://localhost:8080/swagger-ui/index.html when the service are started
+
 ## Start service local
 
 When below are done (the dependencies section) you are able to start the service locally
