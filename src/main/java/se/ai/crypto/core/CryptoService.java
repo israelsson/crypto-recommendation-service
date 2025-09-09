@@ -93,8 +93,6 @@ public class CryptoService {
     public HighestRatedCryptoCurrency findHighestRatedCurrencyForDay(String day) {
 
         return getHighestRatedCryptoCurrencyForDay(day);
-
-        return highestRated;
     }
 
     private HighestRatedCryptoCurrency getHighestRatedCryptoCurrencyForDay(String day) {
