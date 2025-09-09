@@ -1,4 +1,4 @@
-package se.ai.crypto.core;
+package se.ai.crypto.core.model;
 
 import lombok.Getter;
 

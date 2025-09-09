@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.ai.crypto.adapters.api.dto.CryptoCurrencyStatisticDto;
+import se.ai.crypto.adapters.api.dto.HighestRatedCryptoCurrencyDto;
 import se.ai.crypto.adapters.api.dto.NormalizedListResponseDto;
 import se.ai.crypto.configuration.ApplicationConstants;
 import se.ai.crypto.core.CryptoService;
@@ -54,5 +55,19 @@ public class CryptoController {
         log.info("Incoming request to get info about crypto: {}", currency);
         final var statistic = cryptoService.findMinMaxOldestNewestForRequestedCrypto(currency);
         return ResponseEntity.ok(CryptoCurrencyStatisticDto.fromCoreModel(statistic));
+    }
+
+    @Operation(summary = "Returns the highest rated, by normalized range, the specific date (YYYY-MM-DD)")
+    @GetMapping(
+            path = ApplicationConstants.HIGHEST_NORMALIZED_PATH + ApplicationConstants.DATE_PATH,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<HighestRatedCryptoCurrencyDto> getHighestRatedNormalizedRange(@PathVariable String date) {
+
+        log.info("Incoming request to get info about highest rated crypto the date: {}", date);
+
+        final var highestRated = cryptoService.findHighestRatedCurrencyForDay(date);
+
+        return ResponseEntity.ok(HighestRatedCryptoCurrencyDto.fromCoreModel(highestRated));
     }
 }
