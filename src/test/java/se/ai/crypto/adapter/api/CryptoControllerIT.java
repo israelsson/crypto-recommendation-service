@@ -28,6 +28,12 @@ import java.time.format.DateTimeFormatter;
 )
 public class CryptoControllerIT {
 
+    /*
+     *  Kind of dependent of that the background services are running locally in docker
+     *
+     *  Can be a problem with the tests if they are run around midnight
+     */
+
     private static final String SCHEMA_NAME = "piktiv_crypto_service";
     private static final String TABLE_NAME = "crypto";
     private static final LocalDateTime NOW = LocalDateTime.now();
@@ -148,5 +154,4 @@ public class CryptoControllerIT {
             log.error("Could not truncate table '%s'".formatted(TABLE_NAME), ex);
         }
     }
-
 }
