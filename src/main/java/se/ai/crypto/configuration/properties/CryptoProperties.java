@@ -12,12 +12,4 @@ public class CryptoProperties {
     private List<String> supportedCryptos;
 
     private List<String> blockedIps;
-
-    public List<String> getSupportedCryptos() {
-        return supportedCryptos;
-    }
-
-    public void setSupportedCryptos(List<String> supportedCryptos) {
-        this.supportedCryptos = supportedCryptos;
-    }
 }

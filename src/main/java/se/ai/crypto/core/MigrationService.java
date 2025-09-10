@@ -5,11 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import se.ai.crypto.configuration.properties.CryptoProperties;
 import se.ai.crypto.core.exception.ResourceNotFoundException;
 import se.ai.crypto.core.model.CryptoCurrency;
 import se.ai.crypto.core.model.CryptoType;
-import se.ai.crypto.core.ports.DataStorage;
 import se.ai.crypto.utils.FileReaderUtil;
 
 import java.io.File;
@@ -29,14 +27,13 @@ import java.util.Objects;
 @AllArgsConstructor
 public class MigrationService implements CommandLineRunner {
 
-    private CryptoProperties cryptoProperties;
-    private DataStorage dataStorage;
+    private CryptoService cryptoService;
 
     @Override
     public void run(String... args) throws Exception {
 
         // The database is empty, we need to migrate the data
-        if (dataStorage.databaseCheck() == 0) {
+        if (cryptoService.isDatabaseEmpty()) {
             doMigration();
         } else {
             log.info("Data in database already exist, no need for migration");
@@ -81,7 +78,7 @@ public class MigrationService implements CommandLineRunner {
 
         try {
 
-            dataStorage.insertCurrency(currency);
+            cryptoService.insertCryptoCurrency(currency);
         } catch (Exception e) {
 
             log.error("Could not insert currency: {}", e.getMessage(), e);

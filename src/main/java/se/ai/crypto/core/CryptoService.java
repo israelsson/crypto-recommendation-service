@@ -8,6 +8,7 @@ import se.ai.crypto.configuration.properties.CryptoProperties;
 import se.ai.crypto.core.exception.CryptoUnsupportedException;
 import se.ai.crypto.core.exception.DatabaseException;
 import se.ai.crypto.core.exception.StatisticTypeNotSupportedException;
+import se.ai.crypto.core.model.CryptoCurrency;
 import se.ai.crypto.core.model.CryptoCurrencyStatistic;
 import se.ai.crypto.core.model.CryptoCurrencyWithResultType;
 import se.ai.crypto.core.model.HighestRatedCryptoCurrency;
@@ -16,7 +17,6 @@ import se.ai.crypto.core.ports.DataStorage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @Service
@@ -35,6 +35,16 @@ public class CryptoService {
         } catch (Exception e) {
             log.error("Could not do a database check: {}", e.getMessage(), e);
             throw new DatabaseException(e.getMessage(), e);
+        }
+    }
+
+    public void insertCryptoCurrency(CryptoCurrency currency) throws Exception {
+
+        try {
+            dataStorage.insertCurrency(currency);
+        } catch (Exception e) {
+            log.error("Could not insert currency: {}", currency.getType().getName());
+            throw e;
         }
     }
 
