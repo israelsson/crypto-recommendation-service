@@ -60,3 +60,4 @@ would be good if the service exists in a Kubernetes cluster etc. Then it is poss
 rebuild the image
 * Add for example a Kafka consumer or a POST endpoint to be able to update data. CVS files are not manageable
 when the system grows
+* Add Prometheus to be able to monitor the service in a good way
