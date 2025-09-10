@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import se.ai.crypto.core.exception.ResourceNotFoundException;
 import se.ai.crypto.core.model.CryptoCurrency;
@@ -12,6 +14,7 @@ import se.ai.crypto.utils.FileReaderUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -40,27 +43,25 @@ public class MigrationService implements CommandLineRunner {
         }
     }
 
-    private void doMigration() {
+    private void doMigration() throws IOException {
 
-        final var cvsFolder = new ClassPathResource("cvs");
-        log.info("cvs:s can be loaded: " + cvsFolder.exists());
-        if (cvsFolder.exists()) {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath:/cvs/*.csv");
 
-            int counter = 0;
-            final var filesInFolder = getFilesInFolder(cvsFolder);
-            for (File file : filesInFolder) {
+        log.info("Found {} CSV files in /cvs/", resources.length);
 
-                log.info("File: {} loaded", file.getName());
-                final var cvsEntries = getCvsFileContentAsList(file);
+        int counter = 0;
+        for (Resource resource : resources) {
+            log.info("File: {} loaded", resource.getFilename());
 
-                for (String entry : cvsEntries) {
-                    insertCvsEntryInDatabase(entry);
-                    counter++;
-                }
+            final var cvsEntries = getCvsFileContentAsList(resource.getInputStream());
+            for (String entry : cvsEntries) {
+                insertCvsEntryInDatabase(entry);
+                counter++;
             }
-
-            log.info("Migration job is done, {} entries has been added to database", counter);
         }
+
+        log.info("Migration job is done, {} entries has been added to database", counter);
     }
 
     private void insertCvsEntryInDatabase(String entry) {
@@ -83,7 +84,6 @@ public class MigrationService implements CommandLineRunner {
 
             log.error("Could not insert currency: {}", e.getMessage(), e);
         }
-
     }
 
     private static LocalDateTime convertMillisToLocalDateTime(long millis) {
@@ -93,16 +93,15 @@ public class MigrationService implements CommandLineRunner {
                 .toLocalDateTime();
     }
 
-    private List<String> getCvsFileContentAsList(File file) {
+    private List<String> getCvsFileContentAsList(InputStream inputStream) {
         try {
 
-            return FileReaderUtil.readLinesFromCvsResource(file);
+            return FileReaderUtil.readLinesFromCvsResource(inputStream);
         } catch (Exception e) {
 
-            log.error("Could not load cvs file: {} with path: {}", file, file.getAbsolutePath());
+            log.error("Could not load cvs file");
             throw new ResourceNotFoundException(e.getMessage(), e);
         }
-
     }
 
     private List<File> getFilesInFolder(ClassPathResource folder) {

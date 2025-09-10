@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class FileReaderUtil {
 
-    private static final String RESOURCE_PATH = "/cvs/";
-
     public static String readSqlFilesFromResource(String resourcePath) throws Exception {
 
         ClassPathResource resource = new ClassPathResource(resourcePath);
@@ -29,20 +27,17 @@ public class FileReaderUtil {
 
             return scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
         }
-
     }
 
-    public static List<String> readLinesFromCvsResource(File file) throws Exception {
+    public static List<String> readLinesFromCvsResource(InputStream inputStream) throws RuntimeException {
 
-        ClassPathResource resource = new ClassPathResource(RESOURCE_PATH + file.getName());
-
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)
-        )) {
-
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             return reader.lines()
                     .skip(1) // Skip the header
                     .collect(Collectors.toList());
+        } catch (IOException e) {
+
+            throw new RuntimeException("Failed to read CSV file", e);
         }
     }
 }

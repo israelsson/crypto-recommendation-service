@@ -15,3 +15,16 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+
+  crypto-recommendation-service:
+    build:
+      context: .
+    container_name: crypto-recommendation-service
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/piktiv-crypto-service"
+      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+    ports:
+      - "8080:8080"

@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://postgres:5432/piktiv-crypto-service
+    username: postgres
+    password:
+    hikari:
+      auto-commit: true
+  liquibase:
+    url: jdbc:postgresql://postgres:5432/piktiv-crypto-service
+    user: postgres
+    password:
