@@ -3,6 +3,7 @@ package se.ai.crypto.core.ports;
 import se.ai.crypto.core.model.CryptoCurrency;
 import se.ai.crypto.core.model.CryptoCurrencyWithResultType;
 import se.ai.crypto.core.model.HighestRatedCryptoCurrency;
+import se.ai.crypto.core.model.MonthlyOverviewCryptoCurrency;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface DataStorage {
     List<CryptoCurrencyWithResultType> findMinMaxOldestNewestByCrypto(String wantedCrypto) throws Exception;
 
     HighestRatedCryptoCurrency findHighestRatedCrypto(String day) throws Exception;
+
+    List<MonthlyOverviewCryptoCurrency> calculateOldestNewestMinMaxForEachCryptoPerMonth() throws Exception;
 }

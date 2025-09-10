@@ -5,18 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import se.ai.crypto.core.model.CryptoCurrency;
-import se.ai.crypto.core.model.CryptoCurrencyStatistic;
 import se.ai.crypto.core.model.CryptoCurrencyWithResultType;
 import se.ai.crypto.core.model.HighestRatedCryptoCurrency;
+import se.ai.crypto.core.model.MonthlyOverviewCryptoCurrency;
 import se.ai.crypto.core.ports.DataStorage;
 import se.ai.crypto.utils.FileReaderUtil;
 
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,7 @@ public class PostgresDataStorage implements DataStorage {
     private static final String DATABASE_FIND_MIN_MAX_BY_CRYPTO_QUERY = "/db/queries/findMinMaxByCryptoQuery.sql";
     private static final String DATABASE_FIND_MIN_MAX_OLDEST_NEWEST_BY_CRYPTO_QUERY = "/db/queries/findMinMaxOldestNewestCryptoQuery.sql";
     private static final String DATABASE_FIND_HIGHEST_RATED_CURRENCY_QUERY = "/db/queries/highestRatedCurrencyQuery.sql";
+    private static final String DATABASE_CALC_MONTHLY_OVERVIEW_QUERY = "/db/queries/calculateOldestNewestMinMaxForEachCryptoPerMonth.sql";
 
     private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -77,9 +76,7 @@ public class PostgresDataStorage implements DataStorage {
         final var params = new MapSqlParameterSource();
         params.addValue("wantedCryptos", String.join(",", wantedCryptos), Types.ARRAY);
 
-        final var resultList = jdbcTemplate.queryForList(sql, params, CryptoCurrency.class);
-
-        return resultList;
+        return jdbcTemplate.queryForList(sql, params, CryptoCurrency.class);
     }
 
     @Override
@@ -105,5 +102,13 @@ public class PostgresDataStorage implements DataStorage {
         params.addValue("end", Timestamp.valueOf(end), Types.TIMESTAMP);
 
         return jdbcTemplate.queryForObject(sql, params, new HighestRatedCryptoCurrencyRowMapper());
+    }
+
+    public List<MonthlyOverviewCryptoCurrency> calculateOldestNewestMinMaxForEachCryptoPerMonth() throws Exception {
+
+        final var sql = FileReaderUtil.readSqlFilesFromResource(DATABASE_CALC_MONTHLY_OVERVIEW_QUERY);
+        final var params = new MapSqlParameterSource();
+
+        return jdbcTemplate.queryForList(sql, params, MonthlyOverviewCryptoCurrency.class);
     }
 }

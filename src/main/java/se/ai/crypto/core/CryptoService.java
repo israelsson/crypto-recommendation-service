@@ -8,10 +8,7 @@ import se.ai.crypto.configuration.properties.CryptoProperties;
 import se.ai.crypto.core.exception.CryptoUnsupportedException;
 import se.ai.crypto.core.exception.DatabaseException;
 import se.ai.crypto.core.exception.StatisticTypeNotSupportedException;
-import se.ai.crypto.core.model.CryptoCurrency;
-import se.ai.crypto.core.model.CryptoCurrencyStatistic;
-import se.ai.crypto.core.model.CryptoCurrencyWithResultType;
-import se.ai.crypto.core.model.HighestRatedCryptoCurrency;
+import se.ai.crypto.core.model.*;
 import se.ai.crypto.core.ports.DataStorage;
 
 import java.util.ArrayList;
@@ -98,6 +95,18 @@ public class CryptoService {
         resultList.sort(Comparator.comparingDouble(CryptoCurrencyStatistic::getNormalizedRange).reversed());
 
         return resultList;
+    }
+
+    public List<MonthlyOverviewCryptoCurrency> calculateOldestNewestMinMaxForEachCryptoPerMonth() {
+
+        try {
+
+            final var result = dataStorage.calculateOldestNewestMinMaxForEachCryptoPerMonth();
+        } catch (Exception e) {
+            log.error("Could not calc monthly overview: {}", e.getMessage(), e);
+        }
+
+        return null;
     }
 
     public HighestRatedCryptoCurrency findHighestRatedCurrencyForDay(String day) {
