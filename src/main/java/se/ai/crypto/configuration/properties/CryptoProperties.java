@@ -11,6 +11,8 @@ public class CryptoProperties {
 
     private List<String> supportedCryptos;
 
+    private List<String> blockedIps;
+
     public List<String> getSupportedCryptos() {
         return supportedCryptos;
     }
